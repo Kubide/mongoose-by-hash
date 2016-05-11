@@ -11,12 +11,10 @@ var mongoose = require('mongoose'),
 
 /* Setup */
 mongoose.set('debug', true);
-mongoose.connect('mongodb://localhost/k-mongoose-soft-delete-cascade');
+mongoose.connect('mongodb://localhost/mongoose-by-hash');
 
 Resource = new mongoose.Schema({
-    title: {type: String},
-    second: {type: String, soft_delete_action: 'null'},
-    third:  {type: String, soft_delete_action: 'prefix'}
+    title: {type: String}
 },{timestamps:true});
 
 Resource.plugin(FindByHash, {name: 'sweetThing', 'default': "shortid"});
@@ -24,9 +22,7 @@ mongoose.model('Resource', Resource);
 
 
 Resource = new mongoose.Schema({
-    title: {type: String},
-    second: {type: String, soft_delete_action: 'null'},
-    third:  {type: String, soft_delete_action: 'prefix'}
+    title: {type: String}
 },{timestamps:true});
 
 Resource.plugin(FindByHash, {'default': "uuid"});
@@ -35,9 +31,7 @@ mongoose.model('ResourceUUID', Resource);
 
 
 Resource = new mongoose.Schema({
-    title: {type: String},
-    second: {type: String, soft_delete_action: 'null'},
-    third:  {type: String, soft_delete_action: 'prefix'}
+    title: {type: String}
 },{timestamps:true});
 
 Resource.plugin(FindByHash, {'default': function(){return hashExample}});
@@ -59,8 +53,6 @@ mongoose.model('ResourceFunction', Resource);
 
 /* Tests */
 var title = 'Am I wrong, fallin\' in love with you!',
-    second = 'tell me am I wrong, well, fallin\' in love with you',
-    third = 'While your other man was out there',
     hashExample = "Am I wrong";
 
 

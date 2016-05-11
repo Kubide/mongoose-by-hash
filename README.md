@@ -25,6 +25,34 @@ Basic usage (you can see how works better with [test]():
 
 ```js
 
+/* Setup */
+mongoose.set('debug', true);
+mongoose.connect('mongodb://localhost/mongoose-by-hash');
+
+Resource = new mongoose.Schema({
+    title: {type: String}
+},{timestamps:true});
+
+Resource.plugin(FindByHash, {name: 'sweetThing', 'default': "shortid"});
+mongoose.model('Resource', Resource);
+
+
+Resource = new mongoose.Schema({
+    title: {type: String}
+},{timestamps:true});
+
+Resource.plugin(FindByHash, {'default': "uuid"});
+mongoose.model('ResourceUUID', Resource);
+
+
+
+Resource = new mongoose.Schema({
+    title: {type: String}
+},{timestamps:true});
+
+Resource.plugin(FindByHash, {'default': function(){return hashExample}});
+mongoose.model('ResourceFunction', Resource);
+
 
 ```
 
