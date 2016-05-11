@@ -15,7 +15,7 @@ npm install mongoose-by-hash --save
 ## Loading
 
 ```js
-var MongooseByHash = require('mongoose-by-hash');
+var FindByHash = require('mongoose-by-hash');
 
 ```
 
