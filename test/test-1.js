@@ -53,6 +53,8 @@ mongoose.model('ResourceFunction', Resource);
 
 /* Tests */
 var title = 'Am I wrong, fallin\' in love with you!',
+    second = 'tell me am I wrong, well, fallin\' in love with you',
+    third = 'While your other man was out there',
     hashExample = "Am I wrong";
 
 
