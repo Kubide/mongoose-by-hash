@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
     chai = require("chai"),
     should = chai.should(),
     Resource,
-    ResourceDependent;
+    ResourceSubschema;
 
 
 /* Setup */
@@ -37,6 +37,21 @@ Resource = new mongoose.Schema({
 Resource.plugin(FindByHash, {'default': function(){return hashExample}});
 mongoose.model('ResourceFunction', Resource);
 
+// Mongoose model with Subschema
+ResourceSubschema = new mongoose.Schema({
+  title: {type: String},
+  resource: { type: Schema.Types.ObjectId, ref: 'ResourceUUID', required: true}
+},{timestamps:false, id: false, _id: false});
+
+
+Resource = new mongoose.Schema({
+  title: {type: String},
+  embed: { type: [ResourceSubschema], default: []}
+},{timestamps:true});
+
+Resource.plugin(FindByHash, {default: "uuid", others: { mergeable: false }});
+mongoose.model('ResourceEmbed', Resource);
+
 /*
  https://www.youtube.com/watch?v=--UPSacwPDA
  Am I wrong, fallin' in love with you,
@@ -59,6 +74,8 @@ var title = 'Am I wrong, fallin\' in love with you!',
 
 
 describe('Default plugin usage', function () {
+    var resourceEmbed = null;
+
     before(function (done) {
         //Sorry for this.
         mongoose.model('Resource').remove({}, function () {
@@ -95,6 +112,7 @@ describe('Default plugin usage', function () {
             should.exist(doc);
             doc.should.have.property('title').and.equal(title);
             doc.should.have.property('hash');
+            resourceEmbed = doc;
             done();
         });
     });
@@ -113,5 +131,24 @@ describe('Default plugin usage', function () {
             done();
         });
     });
+
+  it('Create a new resource with resource embed without hash', function (done) {
+    mongoose.model('ResourceEmbed').create({
+      title: title,
+      embed: [{
+        title: title,
+        resource: resourceEmbed
+      }]
+    }, function (err, doc) {
+      should.not.exist(err);
+      should.exist(doc);
+      doc.should.have.property('title').and.equal(title);
+      doc.should.have.property('hash');
+      doc.should.have.property('embed')
+        .with.deep.property(0)
+        .not.have.property('hash');
+      done();
+    });
+  });
 
 });
